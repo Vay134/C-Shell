@@ -13,14 +13,14 @@ int main(void)
         type_prompt();     // Display the prompt
         read_command(cmd); // Read a command from the user
 
+        // If the command is empty, skip this loop
+        if (cmd[0] == NULL)
+            continue;
+
         // If the command is "exit", break out of the loop to terminate the shell
         if (strcmp(cmd[0], "exit") == 0)
             // break;
             return 0;
-
-        if (cmd[0] == NULL)
-            // empty command, skip execution
-            continue;
 
         // Fork the current process.
         // Parent should wait for the child to finish.
@@ -80,6 +80,8 @@ int main(void)
             for (int i = 0; cmd[i] != NULL; i++)
             {
                 free(cmd[i]);
+                // To prevent dangling pointers, update each pointer to NULL
+                cmd[i] = NULL; 
             }
         }
     }
