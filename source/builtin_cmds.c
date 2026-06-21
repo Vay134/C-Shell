@@ -73,31 +73,31 @@ int shell_usage(char **args) {
         printf("Command not given. Type usage <command>.\n");
         return 1;
     }
-    elseif (strcmp(args[1], "cd") == 0) {
+    else if (strcmp(args[1], "cd") == 0) {
         printf("Type: cd directory_name to change the current working directory of the shell\n");
         return 1;
     }
-    elseif (strcmp(args[1], "help") == 0) {
+    else if (strcmp(args[1], "help") == 0) {
         printf("Type: help for supported commands\n");
         return 1;
     }
-    elseif (strcmp(args[1], "exit") == 0) {
+    else if (strcmp(args[1], "exit") == 0) {
         printf("Type: exit to terminate the shell gracefully\n");
         return 1;
     }
-    elseif (strcmp(args[1], "usage") == 0) {
+    else if (strcmp(args[1], "usage") == 0) {
         printf("Type: usage cd/help/exit\n");
         return 1;
     }
-    elseif (strcmp(args[1], "env") == 0) {
+    else if (strcmp(args[1], "env") == 0) {
         printf("Type: env to list all registered env variables\n");
         return 1;
     }
-    elseif (strcmp(args[1], "setenv") == 0) {
+    else if (strcmp(args[1], "setenv") == 0) {
         printf("Type: setenv ENV=VALUE to set a new env variable\n");
         return 1;
     }
-    elseif (strcmp(args[1], "unsetenv") == 0) {
+    else if (strcmp(args[1], "unsetenv") == 0) {
         printf("Type: unsetenv ENV to remove this env from the list of env variables\n");
         return 1;
     }
