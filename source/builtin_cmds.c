@@ -132,6 +132,7 @@ int set_env_var(char **args) {
     char env_var[MAX_LINE];
     strcpy(env_var, args[1]);
 
+    // split the first argument into key & val (= delimiter)
     char *key = strtok(env_var, "=");
     char *val = strtok(NULL, "=");
     if (key == NULL || val == NULL) {
@@ -140,6 +141,7 @@ int set_env_var(char **args) {
         printf("Example usage: setenv name=\"Indodon\"\n");
         return -1;
     }
+
     int status = setenv(key, val, 1);
     if (status) {
         printf("setenv failed. \n");
@@ -147,6 +149,23 @@ int set_env_var(char **args) {
 
     return status ? -1 : 1;
 }
+
+// Remove from list of process' environment variables
 int unset_env_var(char **args) {
-    return -1;
+    // First make sure that there are arguments provided
+    if (args[1] == NULL) {
+        printf("Invalid arguments provided. \n");
+        printf("Syntax: unsetenv key\n");
+        printf("Example usage: unsetenv name\n");
+        return -1;
+    }
+
+    int status = unsetenv(args[1]);
+    if (status) {
+        printf("unsetenv failed. \n");
+        printf("Syntax: unsetenv key\n");
+        printf("Example usage: unsetenv name\n");
+    }
+    
+    return status ? -1 : 1;
 }
