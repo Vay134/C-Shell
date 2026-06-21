@@ -17,11 +17,6 @@ int main(void)
         if (cmd[0] == NULL)
             continue;
 
-        // If the command is "exit", break out of the loop to terminate the shell
-        if (strcmp(cmd[0], "exit") == 0)
-            // break;
-            return 0;
-        
         // Loop through builtin commands to see if cmd[0] matches any of them
         int is_builtin = 0;
         for (int cmd_i = 0; cmd_i < num_builtin_functions(); cmd_i++) {
@@ -93,14 +88,8 @@ int main(void)
                 // Child didn't terminate normally
                 printf("Child didn't terminate regularly. \n");
             }
-
-            // Free the allocated memory for the command arguments before exiting
-            // for (int i = 0; cmd[i] != NULL; i++)
-            // {
-            //     free(cmd[i]);
-            //     // To prevent dangling pointers, update each pointer to NULL
-            //     cmd[i] = NULL; 
-            // }
+            
+            // Clean cmd for the next loop
             clean_arr(cmd);
         }
     }
