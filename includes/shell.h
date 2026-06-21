@@ -32,4 +32,7 @@ int unset_env_var(char **args);
 
 extern int (*builtin_command_func[])(char **);
 
+// C standard library environ
+extern char **environ; 
+
 #endif

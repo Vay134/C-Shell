@@ -71,9 +71,17 @@ int shell_exit(char **args) {
 int shell_usage(char **args) {
     return -1;
 }
+
 int list_env(char **args) {
-    return -1;
+    char **env = environ; // Pointer to the array of environment strings
+
+    while (*env) {
+        printf("%s\n", *env);
+        env++;
+    }
+    return 1;
 }
+
 int set_env_var(char **args) {
     return -1;
 }
