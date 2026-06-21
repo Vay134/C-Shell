@@ -12,8 +12,9 @@
 #define MAX_ARGS 64
 #define BIN_PATH "./bin/"
 
+void init_display();
 void type_prompt();
-void read_command(char **cmd);
+int read_command(char **cmd);
 void clean_arr(char **cmd);
 
 extern const char *builtin_commands[];
@@ -34,5 +35,7 @@ extern int (*builtin_command_func[])(char **);
 
 // C standard library environ
 extern char **environ; 
+
+void run_rc(char **cmd, int child_status, pid_t pid);
 
 #endif

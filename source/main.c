@@ -8,10 +8,16 @@ int main(void)
     int child_status;
     pid_t pid;
 
+    init_display();
+    run_rc(cmd, child_status, pid);
+
     while (1)
     {                      // Infinite loop
         type_prompt();     // Display the prompt
-        read_command(cmd); // Read a command from the user
+        // Read a command from the user
+        if (read_command(cmd) != 0) {
+            continue;
+        } 
 
         // If the command is empty, skip this loop
         if (cmd[0] == NULL)
@@ -49,24 +55,33 @@ int main(void)
         else if (pid == 0)
         {
             // Child process
-            // Formulate the full path of the command to be executed
-            char full_path[PATH_MAX];
-            char cwd[1024];
-            if (getcwd(cwd, sizeof(cwd)) != NULL)
-            {
-                snprintf(full_path, sizeof(full_path), "%s/bin/%s", cwd, cmd[0]);
-            }
-            else
-            {
-                printf("Failed to get current working directory.");
-                exit(1);
-            }
+            // 1. Try to find the command in PATH
+            // If execvp succeeds, rest of the code doesn't execute
+            // If it does, we fallback to execv to look for the command in the full_path
+            execvp(cmd[0], cmd);
 
-            execv(full_path, cmd);
+            // Fallback to handle execution in relative directory without "./" prefix
+            char rel_path[PATH_MAX];
+            snprintf(rel_path, sizeof(rel_path), "./%s", cmd[0]);
+            
+            execv(rel_path, cmd);
+
+            // char cwd[1024];
+            // if (getcwd(cwd, sizeof(cwd)) != NULL)
+            // {
+            //     snprintf(full_path, sizeof(full_path), "%s/bin/%s", cwd, cmd[0]);
+            // }
+            // else
+            // {
+            //     printf("Failed to get current working directory.");
+            //     _exit(1);
+            // }
+
+            // execv(full_path, cmd);
 
             // If execv returns, command execution has failed
             printf("Command %s not found\n", cmd[0]);
-            exit(0);
+            _exit(0);
         }
         else
         {
