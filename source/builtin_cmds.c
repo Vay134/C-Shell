@@ -57,7 +57,11 @@ int shell_cd(char **args) {
 
 // Function to print out all builtin commands in the shell
 int shell_help(char **args) {
-    return -1;
+    printf("The following builtin commands are implemented: \n");
+    for (int i = 0; i < num_builtin_functions(); i++){
+        printf("\t%s\n", builtin_commands[i]);
+    }
+    return 1;
 }
 
 int shell_exit(char **args) {
