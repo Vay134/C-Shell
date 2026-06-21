@@ -117,8 +117,35 @@ int list_env(char **args) {
     return 1;
 }
 
+// Add to list of process' environment variables
+// Use setenv() instead of putenv() since cmd will be freed and may cause issues
 int set_env_var(char **args) {
-    return -1;
+    // First make sure that there are arguments provided
+    if (args[1] == NULL) {
+        printf("Invalid arguments provided. \n");
+        printf("Syntax: setenv key=value\n");
+        printf("Example usage: setenv name=\"Indodon\"\n");
+        return -1;
+    }
+
+    // Create a new char array since strtok modifies in-place
+    char env_var[MAX_LINE];
+    strcpy(env_var, args[1]);
+
+    char *key = strtok(env_var, "=");
+    char *val = strtok(NULL, "=");
+    if (key == NULL || val == NULL) {
+        printf("Invalid arguments provided. \n");
+        printf("Syntax: setenv key=value\n");
+        printf("Example usage: setenv name=\"Indodon\"\n");
+        return -1;
+    }
+    int status = setenv(key, val, 1);
+    if (status) {
+        printf("setenv failed. \n");
+    }
+
+    return status ? -1 : 1;
 }
 int unset_env_var(char **args) {
     return -1;
