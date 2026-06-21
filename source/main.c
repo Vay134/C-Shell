@@ -21,6 +21,25 @@ int main(void)
         if (strcmp(cmd[0], "exit") == 0)
             // break;
             return 0;
+        
+        // Loop through builtin commands to see if cmd[0] matches any of them
+        int is_builtin = 0;
+        for (int cmd_i = 0; cmd_i < num_builtin_functions(); cmd_i++) {
+            if (strcmp(cmd[0], builtin_commands[cmd_i]) == 0) {
+                // Run the builtin command in the shell process
+                if ((*builtin_command_func[cmd_i])(cmd) == 0) {
+                    // Return 0 if cmd[0] is exit
+                    return 0;
+                }
+                is_builtin = 1; // Set the flag to true
+                break; // Stop checking for other cmds
+            }
+        }
+
+        if (is_builtin) {
+            clean_arr(cmd); // Reset cmd array
+            continue;
+        }
 
         // Fork the current process.
         // Parent should wait for the child to finish.
@@ -40,7 +59,6 @@ int main(void)
             char cwd[1024];
             if (getcwd(cwd, sizeof(cwd)) != NULL)
             {
-
                 snprintf(full_path, sizeof(full_path), "%s/bin/%s", cwd, cmd[0]);
             }
             else
@@ -77,12 +95,13 @@ int main(void)
             }
 
             // Free the allocated memory for the command arguments before exiting
-            for (int i = 0; cmd[i] != NULL; i++)
-            {
-                free(cmd[i]);
-                // To prevent dangling pointers, update each pointer to NULL
-                cmd[i] = NULL; 
-            }
+            // for (int i = 0; cmd[i] != NULL; i++)
+            // {
+            //     free(cmd[i]);
+            //     // To prevent dangling pointers, update each pointer to NULL
+            //     cmd[i] = NULL; 
+            // }
+            clean_arr(cmd);
         }
     }
 }

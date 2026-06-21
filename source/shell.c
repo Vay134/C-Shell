@@ -74,7 +74,22 @@ void type_prompt()
         first_time = 0;
     }
     fflush(stdout); // Flush the output buffer
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+    {
+        printf("%s ", cwd); // Print current working directory
+    }
     printf("$$ ");  // Print the shell prompt
+}
+
+// Function to clean an array back to its unmodified state
+void clean_arr(char **arr) {
+    for (int i = 0; arr[i] != NULL; i++)
+    {
+        free(arr[i]);
+        // To prevent dangling pointers, update each pointer to NULL
+        arr[i] = NULL; 
+    }
 }
 
 const char *builtin_commands[] = {
@@ -86,6 +101,11 @@ const char *builtin_commands[] = {
     "setenv",  // Sets or modifies an environment variable for this shell session
     "unsetenv" // Removes an environment variable from the shell
 };
+
+// Function that returns the number of builtin commands
+int num_builtin_functions() {
+    return sizeof(builtin_commands) / sizeof(char *);
+}
 
 /*** This is array of functions, with argument char ***/
 int (*builtin_command_func[])(char **) = {
@@ -99,24 +119,50 @@ int (*builtin_command_func[])(char **) = {
 };
 
 int shell_cd(char **args) {
+    char cwd[1024];
+    char target_path[PATH_MAX];
+    int status;
+    if (args[1] == NULL) {
+        return 1;
+    }
 
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+    {
+        snprintf(target_path, sizeof(target_path), "%s/%s", cwd, args[1]);
+        printf("%s\n",target_path);
+        status = chdir(target_path);
+        if (status == 0) {
+            return 1;
+        }
+        else {
+            printf("Failed to change directory.\n");
+            return -1;
+        }
+    }
+    else
+    {
+        printf("Failed to get current working directory.\n");
+        return -1;
+    }
 }
 
 int shell_help(char **args) {
-
+    return -1;
 }
+
 int shell_exit(char **args) {
-
+    return 0;
 }
-int shell_usage(char **args) {
 
+int shell_usage(char **args) {
+    return -1;
 }
 int list_env(char **args) {
-
+    return -1;
 }
 int set_env_var(char **args) {
-
+    return -1;
 }
 int unset_env_var(char **args) {
-
+    return -1;
 }

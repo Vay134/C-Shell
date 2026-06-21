@@ -14,8 +14,10 @@
 
 void type_prompt();
 void read_command(char **cmd);
+void clean_arr(char **cmd);
 
 extern const char *builtin_commands[];
+int num_builtin_functions();
 
 /*
 Handler of each shell builtin function
