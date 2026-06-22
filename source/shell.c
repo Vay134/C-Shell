@@ -11,13 +11,15 @@ void init_display() {
     #else
     system("clear"); // UNIX/Linux command to clear screen
     #endif
-    printf("              _   _    ____      U  ___ u  ____      U  ___ u  _   _     \n"
-           "     ___     | \\ |\"|  |  _\"\\      \\/\"_ \\/ |  _\"\\      \\/\"_ \\/ | \\ |\"|    \n"
-           "    |_\"_|   <|  \\| |>/| | | |     | | | |/| | | |     | | | |<|  \\| |>   \n"
-           "     | |    U| |\\  |uU| |_| |\\.-,_| |_| |U| |_| |\\.-,_| |_| |U| |\\  |u   \n"
-           "   U/| |\\u   |_| \\_|  |____/ u \\_)-\\___/  |____/ u \\_)-\\___/  |_| \\_|    \n"
-           ".-,_|___|_,-.||   \\\\,-.|||_         \\\\     |||_         \\\\    ||   \\\\,-. \n"
-           " \\_)-' '-(_/ (_\")  (_/(__)_)       (__)   (__)_)       (__)   (_\")  (_/  \n");
+
+    printf(
+        COLOR_BRIGHT_RED "              _   _    ____      U  ___ u  ____      U  ___ u  _   _     \n"
+        "     ___     | \\ |\"|  |  _\"\\      \\/\"_ \\/ |  _\"\\      \\/\"_ \\/ | \\ |\"|    \n"
+        "    |_\"_|   <|  \\| |>/| | | |     | | | |/| | | |     | | | |<|  \\| |>   \n"
+        "     | |   " COLOR_BRIGHT_WHITE " U| |\\  |uU| |_| |\\.-,_| |_| |U| |_| |\\.-,_| |_| |U| |\\  |u   \n"
+        "   U/| |\\u   |_| \\_|  |____/ u \\_)-\\___/  |____/ u \\_)-\\___/  |_| \\_|    \n"
+        ".-,_|___|_,-.||   \\\\,-.|||_         \\\\     |||_         \\\\    ||   \\\\,-. \n"
+        " \\_)-' '-(_/ (_\")  (_/(__)_)       (__)   (__)_)       (__)   (_\")  (_/  \n\n" COLOR_RESET);
 }
 
 void split_command(char **cmd, char *line)
@@ -83,16 +85,37 @@ int read_command(char **cmd)
     return 0;
 }
 
+int get_user_host(char *hostname, char* user) {
+    if (gethostname(hostname, HOST_NAME_MAX + 1) != 0) {
+        perror("gethostname failed");
+        return 1;
+    }
+
+    struct passwd *pw = getpwuid(getuid());
+    if (pw == NULL) {
+        perror("getpwuid failed");
+        return 1;
+    }
+    strcpy(user, pw->pw_name);
+    return 0;
+}
+
 // Function to display the shell prompt
 void type_prompt()
 {
     fflush(stdout); // Flush the output buffer
     char cwd[1024];
+
+    char hostname[HOST_NAME_MAX + 1], user[LOGIN_NAME_MAX + 1];
+    if (get_user_host(hostname, user) == 0) {
+        printf(COLOR_BRIGHT_GREEN "%s@%s:" COLOR_RESET, user, hostname);
+    }
+
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
-        printf("%s ", cwd); // Print current working directory
+        printf(COLOR_BRIGHT_BLUE "%s \n" COLOR_RESET, cwd); // Print current working directory
     }
-    printf("$$ "); // Print the shell prompt
+    printf(COLOR_BRIGHT_BLACK " → "); // Print the shell prompt
 }
 
 // Function to clean an array back to its unmodified state

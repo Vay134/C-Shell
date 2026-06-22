@@ -17,7 +17,8 @@ int main(void)
         // Read a command from the user
         if (read_command(cmd) != 0) {
             continue;
-        } 
+        }
+        printf(COLOR_RESET); // Reset color after being set in type_prompt()
 
         // If the command is empty, skip this loop
         if (cmd[0] == NULL)
@@ -89,7 +90,7 @@ int main(void)
             // Wait for child process to stop, store status of child in child_status
             // WUNTRACED flag makes waitpid also return if a child process was irregularly terminated
             waitpid(pid, &child_status, WUNTRACED);
-
+            
             // WIFEXITED(status) returns true if child is terminated normally (by exit or return),
             // false if otherwise (e.g. crash, killed by signal)
             // Check is required since WEXITSTATUS(status) is only valid for regular terminations
