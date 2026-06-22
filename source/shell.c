@@ -183,7 +183,7 @@ static void display_usage()
 }
 
 // Helper function to execute system programs
-static void exec_sys_prog(char **cmd)
+static void exec_sys_prog(char **cmd, int is_rc)
 {
     int child_status;
     pid_t pid = fork();
@@ -220,7 +220,10 @@ static void exec_sys_prog(char **cmd)
         }
         else 
         {
-            display_usage();
+            if (!is_rc) {
+                // Display usage only if execvp not called from rc file parsing
+                display_usage();
+            }
         }
     }
 }
@@ -232,21 +235,27 @@ static void handle_rc_line(char **cmd, char *line)
     if (strlen(line) > 0 && line[strlen(line) - 1] == '\n')
         line[strlen(line) - 1] = '\0';
 
-    // Check if the first character is a null terminator
-    if (line[0] == '\0')
-        return;
+    // Create pointer to first char
+    char *start = line;
+    // skip leading whitespaces
+    while (*start == ' ' || *start == '\t') {
+        start++;
+    }
 
-    // Check if the first 4 characters in line are "PATH"
-    // strncmp only compares up to the first n characters
-    else if (strncmp(line, "PATH", 4) == 0)
+    // Check if the first character is a null terminator or a comment
+    if (*start == '\0' || *start == '#')
+        return;
+    
+    // Check if '=' in the rest of the line
+    if (strchr(start, '=')) 
     {
-        // Set PATH
+        // Set environment variable
         // split the first argument into key & val (= delimiter)
         char *key = strtok(line, "=");
         char *val = strtok(NULL, "=");
         if (key == NULL || val == NULL)
         {
-            printf("PATH declaration failed. \n");
+            printf("Unable to extract key and value. \n");
             return;
         }
 
@@ -260,7 +269,7 @@ static void handle_rc_line(char **cmd, char *line)
     {
         // run command
         split_command(cmd, line);
-        exec_sys_prog(cmd);
+        exec_sys_prog(cmd, 1);
         // Clean cmd for the next loop
         clean_arr(cmd);
     }
@@ -345,7 +354,7 @@ int shell_loop()
             continue;
         }
 
-        exec_sys_prog(cmd);
+        exec_sys_prog(cmd, 0);
 
         // Clean cmd for the next loop
         clean_arr(cmd);
