@@ -81,7 +81,8 @@ For an explanation of what to test and how to structure your testable code, see 
 - ASCII art on shell start
 - Several color themes
 - Time, user, cwd display on each prompt
+- Resource usage reports for every individual command ran
 
 ## Sustainability and Inclusivity: 
-- Sustainability: 
+- Sustainability: We added resource usage reports for each process execution so that users of our CSEShell can be more mindful of long, resource-intensive processes that require plenty of energy. 
 - Inclusivity: By implementing custom themes, our programmes allow for users with specific preferences to customize the shell. This includes individuals with specific needs such as color blindness and light sensitivity. 
