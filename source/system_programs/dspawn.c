@@ -115,7 +115,7 @@ int execute(char **args)
     int fd1 = dup(0);
     int fd2 = dup(0);
 
-    return daemon_work();;
+    return daemon_work();
 }
 
 int main(int argc, char **args)

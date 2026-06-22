@@ -61,26 +61,7 @@ int main(void)
             // If it does, we fallback to execv to look for the command in the full_path
             execvp(cmd[0], cmd);
 
-            // Fallback to handle execution in relative directory without "./" prefix
-            char rel_path[PATH_MAX];
-            snprintf(rel_path, sizeof(rel_path), "./%s", cmd[0]);
-            
-            execv(rel_path, cmd);
-
-            // char cwd[1024];
-            // if (getcwd(cwd, sizeof(cwd)) != NULL)
-            // {
-            //     snprintf(full_path, sizeof(full_path), "%s/bin/%s", cwd, cmd[0]);
-            // }
-            // else
-            // {
-            //     printf("Failed to get current working directory.");
-            //     _exit(1);
-            // }
-
-            // execv(full_path, cmd);
-
-            // If execv returns, command execution has failed
+            // If execvp returns, command execution has failed
             printf("Command %s not found\n", cmd[0]);
             _exit(0);
         }
