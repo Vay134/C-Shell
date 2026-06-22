@@ -33,7 +33,10 @@ int set_env_var(char **args);
 int unset_env_var(char **args);
 
 extern int (*builtin_command_func[])(char **);
-
+void split_command(char **cmd, char *line); //new helper func
+void clean_arr(char **arr); //new helper func
+int get_user_host(char *hostname, char *user); //new helper func
+void type_prompt(); // new helper func
 // C standard library environ
 extern char **environ; 
 

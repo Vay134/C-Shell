@@ -21,7 +21,7 @@ void init_display()
 }
 
 // Helper function to split a line into an array of its arguments (cmd)
-static void split_command(char **cmd, char *line)
+void split_command(char **cmd, char *line)
 {
     int i = 0;
     char *command_token;
@@ -88,7 +88,7 @@ static int read_command(char **cmd)
 }
 
 // Helper function to clean an array back to its original state
-static void clean_arr(char **arr)
+void clean_arr(char **arr)
 {
     for (int i = 0; arr[i] != NULL; i++)
     {
@@ -99,7 +99,7 @@ static void clean_arr(char **arr)
 }
 
 // Helper function to get user and host
-static int get_user_host(char *hostname, char *user)
+int get_user_host(char *hostname, char *user)
 {
     if (gethostname(hostname, HOST_NAME_MAX + 1) != 0)
     {
@@ -118,7 +118,7 @@ static int get_user_host(char *hostname, char *user)
 }
 
 // Helper function to display the shell prompt
-static void type_prompt()
+void type_prompt()
 {
     fflush(stdout); // Flush the output buffer
     char cwd[1024];
@@ -154,6 +154,7 @@ static void exec_sys_prog(char **cmd)
 
         // If execvp returns, command execution has failed
         printf("Command %s not found\n", cmd[0]);
+        fflush(stdout);
         _exit(0);
     }
     else
