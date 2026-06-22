@@ -108,12 +108,12 @@ void type_prompt()
 
     char hostname[HOST_NAME_MAX + 1], user[LOGIN_NAME_MAX + 1];
     if (get_user_host(hostname, user) == 0) {
-        printf(COLOR_BRIGHT_GREEN "%s@%s:" COLOR_RESET, user, hostname);
+        printf(BOLD COLOR_BRIGHT_GREEN "%s@%s:" COLOR_RESET, user, hostname);
     }
 
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
-        printf(COLOR_BRIGHT_BLUE "%s \n" COLOR_RESET, cwd); // Print current working directory
+        printf(BOLD COLOR_BRIGHT_BLUE "%s \n" COLOR_RESET, cwd); // Print current working directory
     }
     printf(COLOR_BRIGHT_BLACK " → "); // Print the shell prompt
 }
