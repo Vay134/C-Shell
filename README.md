@@ -1,88 +1,140 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/CBJ_yXMW)
 # CSEShell
 
-## Building the Project
+A small interactive UNIX shell with a set of built-in commands and bundled
+system programs.
 
-To build the CSEShell and system programs, run the following command in the root directory:
+## Compiling and Running
+
+### Compile
+
+From the repository root, build the shell and all system programs with:
 
 ```bash
 make
 ```
 
-This will compile the source code and place the executable files in the appropriate directories.
+This compiles every `.c` file under `source/` (plus `source/libs/`) into the
+`cseshell` executable, and builds each program in `source/system_programs/`
+into the `bin/` directory.
 
-## Running CSEShell
-
-After building, you can start the shell by running:
+### Run
 
 ```bash
 ./cseshell
 ```
 
-From there, you can execute built-in commands and any of the included system programs (e.g., `find`, `ld`, `ldr`).
+On start-up the shell:
+1. Prints an ASCII banner (`init_display`).
+2. Reads `.cseshellrc` in the current directory (`run_rc`) where
+   `PATH` is set so the bundled system programs in `bin/` can be found.
+3. Drops into the interactive prompt, which shows the time, `user@host`, and
+   the current working directory.
 
-## Built-in commands
+At the prompt you can run any built-in command (below) or any of the system
+programs (`find`, `ld`, `ldr`, `sys`, `dspawn`, `dcheck`, `backup`).
 
-- `shell_cd` - Changes current working directory
-- `shell_help` - Lists down all built-in commands
-- `shell_exit` - Exits the shell
-- `shell_usage` - Displays information regarding built-in commands
-- `list_env` - Lists down all the environment variables
-- `set_env_var` - Sets an environment variables
-- `unset_env_var` - Unsets a specific environment variable
-- `set_theme` - Sets the color theme of the shell
-
-## System Programs
-
-- `find.c` - Searches for files in a directory.
-- `ld.c` - List the contents of the curent directory.
-- `ldr.c` - List the contents of the current directory recursively.
-- `sys.c` - Displays information about the system. 
-- `dspawn.c` - Spawns a Daemon that counts to 10. 
-- `dcheck.c` - Displays how many Daemons are running. 
-
-## Makefile
-
-The Makefile contains rules for compiling the shell and system programs. You can clean the build by running:
+### Clean
 
 ```bash
 make clean
 ```
 
+> **Note:** the system programs are only found because `.cseshellrc` adds
+> `bin/` to `PATH`. If project is moved, update the absolute path in
+> `.cseshellrc`.
+
+## Built-in Commands
+
+| Command | Syntax | Description |
+|---------|--------|-------------|
+| `cd` | `cd <dir>` | Change the shell's current working directory. |
+| `help` | `help` | List all built-in commands. |
+| `exit` | `exit` | Exit the shell gracefully. |
+| `usage` | `usage <command>` | Print a short usage guide for a built-in command. |
+| `env` | `env` | List all current environment variables. |
+| `setenv` | `setenv KEY=VALUE` | Set or modify an environment variable for this session. |
+| `unsetenv` | `unsetenv KEY` | Remove an environment variable. |
+| `theme` | `theme <name>` | Change the shell's colour theme. |
+
+Available themes for `theme <name>`: `default`, `colorblind`, `contrast`,
+`cyberpunk`, `monochrome`, `white`, `green`. Running `theme` with no argument
+prints the list.
+
+## System Programs
+
+Built into `bin/` and runnable by name from inside the shell:
+
+- `find` — search for files in a directory.
+- `ld` — list the contents of the current directory.
+- `ldr` — list the contents of the current directory recursively.
+- `sys` — display system information (OS, kernel, hostname, uptime, user, CPU, memory).
+- `dspawn` — spawn a detached daemon that logs to `dspawn.log`.
+- `dcheck` — report how many `dspawn` daemons are currently running.
+- `backup` — zip the directory named by `$BACKUP_DIR` into `./archive/` (requires `zip`).
+
 ## Testing
 
-This project ships with two layers of tests:
+The project ships with two layers of tests.
 
-- **Unit tests** in `tests/unit/`. Small C programs that exercise pure helper functions directly, using the Unity framework. You can create any matching `test_foo.c` under `tests/unit` to test any libs under `source/libs/foo.c` by including the matching `source/libs/foo.h` header file in the unit test. See `tests/unit/test_perms.c` (or `test_rc_parser.c`) for example.
-- **Integration tests** in `tests/integration/`. Bash scripts that run the compiled `./cseshell` as a subprocess, feed it `stdin`, and check `stdout`.
-  - You should create your own integration tests. These samples given are just samples, adjust it accordingly.
-
-Run all tests:
+### Run everything
 
 ```bash
-make test
+make test          # unit tests + integration tests
 ```
 
-Run only unit tests:
+### Unit tests
+
+C programs in `tests/unit/` that exercise pure helper functions directly using
+the [Unity](tests/unity) framework.
 
 ```bash
 make unit
 ```
 
-Run only integration tests (requires that `make` has been run first so `cseshell` and the system program binaries exist):
+Supported unit tests:
+
+| File | Covers |
+|------|--------|
+| `tests/unit/test_perms.c` | `perms_to_string` (`source/libs/perms.c`); permission bits → `ls`-style string. |
+| `tests/unit/test_shell.c` | `split_command` and `clean_arr` (`source/shell.c`); command tokenising and cleanup. |
+
+### Integration tests
+
+Bash scripts in `tests/integration/` that launch the compiled `./cseshell`,
+feed it commands on `stdin`, and assert on its output. Requires that `make`
+has been run first so `cseshell` and the `bin/` programs exist.
 
 ```bash
 make integration
 ```
 
-For an explanation of what to test and how to structure your testable code, see the testing handout.
+Supported integration tests:
 
-## Additional features: 
-- ASCII art on shell start
-- Several color themes
-- Time, user, cwd display on each prompt
-- Resource usage reports for every individual command ran
+| Script | What it checks |
+|--------|----------------|
+| `test_builtin_cd.sh` | `cd` changes the working directory. |
+| `test_builtin_env.sh` | `env` / `setenv` / `unsetenv` work together. |
+| `test_builtin_help.sh` | `help` lists all built-ins. |
+| `test_builtin_usage.sh` | `usage` handles known, missing, and unknown commands. |
+| `test_exit.sh` | `exit` terminates the shell. |
+| `test_loop.sh` | the shell loops and survives unknown commands. |
+| `test_sys.sh` | `sys` prints all expected information fields. |
+| `test_dspawn.sh` | `dspawn` starts a daemon that writes to `dspawn.log`. |
+| `test_dcheck.sh` | `dcheck` reports at least one live daemon after `dspawn`. |
+| `test_backup.sh` | `backup` zips `$BACKUP_DIR` into `./archive/` (skips if `zip` is absent). |
+| `test_system_programs_bundled.sh` | `ld`, `find`, and `ldr` work through the shell. |
 
-## Sustainability and Inclusivity: 
-- Sustainability: We added resource usage reports for each process execution so that users of our CSEShell can be more mindful of long, resource-intensive processes that require plenty of energy. 
-- Inclusivity: By implementing custom themes, our programmes allow for users with specific preferences to customize the shell. This includes individuals with specific needs such as color blindness and light sensitivity. 
+## Additional Features
+
+- ASCII art banner on shell start.
+- Several selectable colour themes.
+- Time, user, and cwd shown on each prompt.
+- Resource-usage reporting for each command that runs.
+
+## Sustainability and Inclusivity
+
+- **Sustainability:** resource-usage reports for each process execution help
+  users notice long, resource-intensive commands that consume more energy.
+- **Inclusivity:** custom themes let users tailor the shell to their needs,
+  including support for colour blindness and light sensitivity.

@@ -57,6 +57,11 @@ $(UNIT_BIN_DIR)/test_%: $(UNIT_DIR)/test_%.c $(UNITY_DIR)/unity.c $(LIB_SOURCES)
 	@mkdir -p $(UNIT_BIN_DIR)
 	$(CC) $(TEST_CFLAGS) $^ $(EXTRA_SRC) -o $@
 
+# test_shell exercises helpers defined in source/shell.c, which in turn needs
+# the builtin tables from source/builtin_cmds.c. Add them as extra prerequisites
+# (the pattern rule above supplies the recipe and links all prerequisites via $^).
+$(UNIT_BIN_DIR)/test_shell: $(SRC_ROOT)/shell.c $(SRC_ROOT)/builtin_cmds.c
+
 unit: $(UNIT_BINS)
 	@echo "==> Running unit tests"
 	@pass=0; fail=0; \
