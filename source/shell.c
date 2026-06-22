@@ -139,7 +139,8 @@ int get_user_host(char *hostname, char *user)
     return 0;
 }
 
-static struct tm *get_localtime() {
+static struct tm *get_localtime()
+{
     time_t now = time(NULL);
     struct tm *t = localtime(&now); // Convert to local time
     return t;
@@ -152,7 +153,7 @@ void type_prompt()
     char cwd[1024];
 
     char hostname[HOST_NAME_MAX + 1], user[LOGIN_NAME_MAX + 1];
-    
+
     struct tm *t = get_localtime();
     printf("%d:%d ", t->tm_hour, t->tm_min);
 
@@ -166,6 +167,19 @@ void type_prompt()
         printf(BOLD "%s%s \n" COLOR_RESET, theme_cwd, cwd); // Print current working directory
     }
     printf("%s → ", theme_prompt); // Print the shell prompt
+}
+
+static void display_usage()
+{
+    struct rusage usage;
+    if (getrusage(RUSAGE_CHILDREN, &usage) == 0) {
+        printf("Command resource usage: \n");
+        // sec: seconds, usec: microseconds
+        printf("User CPU time: %.4fs\n", usage.ru_utime.tv_sec + usage.ru_utime.tv_usec / 1000000.0);
+        printf("System CPU time: %.4fs\n", usage.ru_stime.tv_sec + usage.ru_stime.tv_usec / 1000000.0);
+        // usage.ru.maxrss is in KB, divide by 1024 to convert to MB
+        printf("Peak memory usage: %.3f MB\n", usage.ru_maxrss/1024.0);
+    }
 }
 
 // Helper function to execute system programs
@@ -203,6 +217,10 @@ static void exec_sys_prog(char **cmd)
         {
             // Child didn't terminate normally
             printf("Child didn't terminate regularly. \n");
+        }
+        else 
+        {
+            display_usage();
         }
     }
 }

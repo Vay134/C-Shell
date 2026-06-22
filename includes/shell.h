@@ -10,6 +10,9 @@
 #include <sys/types.h> // For pwd.h
 #include <pwd.h> // For getting user
 #include <time.h>
+// For resource consumption
+#include <sys/resource.h>
+#include <sys/time.h>
 
 #define MAX_LINE 1024
 #define MAX_ARGS 64
