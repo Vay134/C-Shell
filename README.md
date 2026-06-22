@@ -55,7 +55,7 @@ make clean
 | `env` | `env` | List all current environment variables. |
 | `setenv` | `setenv KEY=VALUE` | Set or modify an environment variable for this session. |
 | `unsetenv` | `unsetenv KEY` | Remove an environment variable. |
-| `theme` | `theme <name>` | Change the shell's colour theme. |
+| `theme` | `theme <name>` | Change the shell's colour theme or display the current theme. |
 
 Available themes for `theme <name>`: `default`, `colorblind`, `contrast`,
 `cyberpunk`, `monochrome`, `white`, `green`. Running `theme` with no argument
@@ -128,9 +128,10 @@ Supported integration tests:
 ## Additional Features
 
 - ASCII art banner on shell start.
-- Several selectable colour themes.
+- Several selectable colour themes, configurable on startup in the .cseshellrc file.
 - Time, user, and cwd shown on each prompt.
 - Resource-usage reporting for each command that runs.
+- .cseshellrc parser that allows parsing environment variables (including PATH), commands, and comments
 
 ## Sustainability and Inclusivity
 
