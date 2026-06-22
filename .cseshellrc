@@ -1,2 +1,3 @@
 PATH=/home/vboxuser/50.005/2026-pa1-50005-indodon/bin:/usr/bin
-echo "Welcome to CSEShell!"
+THEME=cyberpunk
+echo Welcome to CSEShell!
