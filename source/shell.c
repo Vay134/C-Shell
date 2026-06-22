@@ -8,15 +8,17 @@ char *theme_cwd;
 char *theme_prompt;
 
 // Function to print ASCII art
-void print_ascii() {
+void print_ascii()
+{
     printf(
-            "%s              _   _    ____      U  ___ u  ____      U  ___ u  _   _     \n"
-            "     ___     | \\ |\"|  |  _\"\\      \\/\"_ \\/ |  _\"\\      \\/\"_ \\/ | \\ |\"|    \n"
-            "    |_\"_|   <|  \\| |>/| | | |     | | | |/| | | |     | | | |<|  \\| |>   \n"
-            "     | |   %s U| |\\  |uU| |_| |\\.-,_| |_| |U| |_| |\\.-,_| |_| |U| |\\  |u   \n"
-            "   U/| |\\u   |_| \\_|  |____/ u \\_)-\\___/  |____/ u \\_)-\\___/  |_| \\_|    \n"
-            ".-,_|___|_,-.||   \\\\,-.|||_         \\\\     |||_         \\\\    ||   \\\\,-. \n"
-            " \\_)-' '-(_/ (_\")  (_/(__)_)       (__)   (__)_)       (__)   (_\")  (_/  \n\n" COLOR_RESET, theme_banner_1, theme_banner_2);
+        "%s              _   _    ____      U  ___ u  ____      U  ___ u  _   _     \n"
+        "     ___     | \\ |\"|  |  _\"\\      \\/\"_ \\/ |  _\"\\      \\/\"_ \\/ | \\ |\"|    \n"
+        "    |_\"_|   <|  \\| |>/| | | |     | | | |/| | | |     | | | |<|  \\| |>   \n"
+        "     | |   %s U| |\\  |uU| |_| |\\.-,_| |_| |U| |_| |\\.-,_| |_| |U| |\\  |u   \n"
+        "   U/| |\\u   |_| \\_|  |____/ u \\_)-\\___/  |____/ u \\_)-\\___/  |_| \\_|    \n"
+        ".-,_|___|_,-.||   \\\\,-.|||_         \\\\     |||_         \\\\    ||   \\\\,-. \n"
+        " \\_)-' '-(_/ (_\")  (_/(__)_)       (__)   (__)_)       (__)   (_\")  (_/  \n\n" COLOR_RESET,
+        theme_banner_1, theme_banner_2);
 }
 
 void init_display()
@@ -59,7 +61,8 @@ static void split_command(char **cmd, char *line)
 }
 
 // Function to set initial colors to default
-void init_colors(){
+void init_colors()
+{
     char *cmd[MAX_ARGS]; // Array of pointers to characters
     char theme_inline[] = "theme default";
     split_command(cmd, theme_inline);
@@ -136,6 +139,12 @@ static int get_user_host(char *hostname, char *user)
     return 0;
 }
 
+static struct tm *get_localtime() {
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now); // Convert to local time
+    return t;
+}
+
 // Helper function to display the shell prompt
 static void type_prompt()
 {
@@ -143,6 +152,10 @@ static void type_prompt()
     char cwd[1024];
 
     char hostname[HOST_NAME_MAX + 1], user[LOGIN_NAME_MAX + 1];
+    
+    struct tm *t = get_localtime();
+    printf("%d:%d ", t->tm_hour, t->tm_min);
+
     if (get_user_host(hostname, user) == 0)
     {
         printf(BOLD "%s%s@%s:" COLOR_RESET, theme_userhost, user, hostname);
