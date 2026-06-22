@@ -7,3 +7,4 @@ archive/
 cseshell
 tests/unit/bin
 tests/integration/bin
+dspawn.log
