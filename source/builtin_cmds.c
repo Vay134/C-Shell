@@ -233,6 +233,12 @@ int set_theme(char **args) {
         theme_prompt = COLOR_GREEN ;
     }
     else {
+        // default config
+        theme_banner_1 = COLOR_BRIGHT_RED;
+        theme_banner_2 = COLOR_BRIGHT_WHITE;
+        theme_userhost = COLOR_BRIGHT_GREEN;
+        theme_cwd = COLOR_BRIGHT_BLUE;
+        theme_prompt = COLOR_BRIGHT_BLACK ;
         printf("Syntax: theme [default | colorblind | contrast | cyberpunk | monochrome | white | green]\n");
         printf("Example usage: theme default\n");
         return -1;
