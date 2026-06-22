@@ -14,13 +14,15 @@
 #define MAX_ARGS 64
 #define BIN_PATH "./bin/"
 
+void print_ascii();
 int run_rc();
 int shell_loop();
 void init_display();
+void init_colors();
 
+extern int (*builtin_command_func[])(char **);
 extern const char *builtin_commands[];
 int num_builtin_functions();
-
 /*
 Handler of each shell builtin function
 */
@@ -31,8 +33,7 @@ int shell_usage(char **args);
 int list_env(char **args);
 int set_env_var(char **args);
 int unset_env_var(char **args);
-
-extern int (*builtin_command_func[])(char **);
+int set_theme(char **args);
 
 // C standard library environ
 extern char **environ; 
@@ -76,5 +77,11 @@ extern char **environ;
 
 #define BOLD                    "\x1b[1m"
 #define COLOR_RESET             "\x1b[0m"
+
+extern char *theme_banner_1;
+extern char *theme_banner_2;
+extern char *theme_userhost;
+extern char *theme_cwd;
+extern char *theme_prompt;
 
 #endif

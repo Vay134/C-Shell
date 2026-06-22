@@ -1,5 +1,24 @@
 #include "shell.h"
 
+// Define color themes
+char *theme_banner_1;
+char *theme_banner_2;
+char *theme_userhost;
+char *theme_cwd;
+char *theme_prompt;
+
+// Function to print ASCII art
+void print_ascii() {
+    printf(
+            "%s              _   _    ____      U  ___ u  ____      U  ___ u  _   _     \n"
+            "     ___     | \\ |\"|  |  _\"\\      \\/\"_ \\/ |  _\"\\      \\/\"_ \\/ | \\ |\"|    \n"
+            "    |_\"_|   <|  \\| |>/| | | |     | | | |/| | | |     | | | |<|  \\| |>   \n"
+            "     | |   %s U| |\\  |uU| |_| |\\.-,_| |_| |U| |_| |\\.-,_| |_| |U| |\\  |u   \n"
+            "   U/| |\\u   |_| \\_|  |____/ u \\_)-\\___/  |____/ u \\_)-\\___/  |_| \\_|    \n"
+            ".-,_|___|_,-.||   \\\\,-.|||_         \\\\     |||_         \\\\    ||   \\\\,-. \n"
+            " \\_)-' '-(_/ (_\")  (_/(__)_)       (__)   (__)_)       (__)   (_\")  (_/  \n\n" COLOR_RESET, theme_banner_1, theme_banner_2);
+}
+
 void init_display()
 {
 // Clear the screen on the first call
@@ -8,16 +27,8 @@ void init_display()
 #else
     system("clear"); // UNIX/Linux command to clear screen
 #endif
-
     // Print ASCII text
-    printf(
-        COLOR_BRIGHT_RED "              _   _    ____      U  ___ u  ____      U  ___ u  _   _     \n"
-                         "     ___     | \\ |\"|  |  _\"\\      \\/\"_ \\/ |  _\"\\      \\/\"_ \\/ | \\ |\"|    \n"
-                         "    |_\"_|   <|  \\| |>/| | | |     | | | |/| | | |     | | | |<|  \\| |>   \n"
-                         "     | |   " COLOR_BRIGHT_WHITE " U| |\\  |uU| |_| |\\.-,_| |_| |U| |_| |\\.-,_| |_| |U| |\\  |u   \n"
-                         "   U/| |\\u   |_| \\_|  |____/ u \\_)-\\___/  |____/ u \\_)-\\___/  |_| \\_|    \n"
-                         ".-,_|___|_,-.||   \\\\,-.|||_         \\\\     |||_         \\\\    ||   \\\\,-. \n"
-                         " \\_)-' '-(_/ (_\")  (_/(__)_)       (__)   (__)_)       (__)   (_\")  (_/  \n\n" COLOR_RESET);
+    print_ascii();
 }
 
 // Helper function to split a line into an array of its arguments (cmd)
@@ -45,6 +56,14 @@ static void split_command(char **cmd, char *line)
     }
     // Null-terminate the cmd array to mark the end of arguments
     cmd[i] = NULL;
+}
+
+// Function to set initial colors to default
+void init_colors(){
+    char *cmd[MAX_ARGS]; // Array of pointers to characters
+    char theme_inline[] = "theme default";
+    split_command(cmd, theme_inline);
+    set_theme(cmd);
 }
 
 // Helper function to read a command from the user input
@@ -126,14 +145,14 @@ static void type_prompt()
     char hostname[HOST_NAME_MAX + 1], user[LOGIN_NAME_MAX + 1];
     if (get_user_host(hostname, user) == 0)
     {
-        printf(BOLD COLOR_BRIGHT_GREEN "%s@%s:" COLOR_RESET, user, hostname);
+        printf(BOLD "%s%s@%s:" COLOR_RESET, theme_userhost, user, hostname);
     }
 
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
-        printf(BOLD COLOR_BRIGHT_BLUE "%s \n" COLOR_RESET, cwd); // Print current working directory
+        printf(BOLD "%s%s \n" COLOR_RESET, theme_cwd, cwd); // Print current working directory
     }
-    printf(COLOR_BRIGHT_BLACK " → "); // Print the shell prompt
+    printf("%s → ", theme_prompt); // Print the shell prompt
 }
 
 // Helper function to execute system programs

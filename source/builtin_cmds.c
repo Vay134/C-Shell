@@ -7,7 +7,8 @@ const char *builtin_commands[] = {
     "usage",   // Provides a brief usage guide for the shell and its built-in command
     "env",     // Lists all the environment variables currently set in the shell
     "setenv",  // Sets or modifies an environment variable for this shell session
-    "unsetenv" // Removes an environment variable from the shell
+    "unsetenv", // Removes an environment variable from the shell
+    "theme" // Display/set theme of shell
 };
 
 // Function that returns the number of builtin commands
@@ -23,7 +24,8 @@ int (*builtin_command_func[])(char **) = {
     &shell_usage,  // builtin_command_func[3]: usage
     &list_env,     // builtin_command_func[4]: env
     &set_env_var,  // builtin_command_func[5]: setenv
-    &unset_env_var // builtin_command_func[6]: unsetenv
+    &unset_env_var, // builtin_command_func[6]: unsetenv
+    &set_theme // builtin_command_func[7]: theme
 };
 
 // Function to change working directory
@@ -101,6 +103,10 @@ int shell_usage(char **args) {
         printf("Type: unsetenv ENV to remove this env from the list of env variables\n");
         return 1;
     }
+    else if (strcmp(args[1], "theme") == 0) {
+        printf("Type: theme THEME to change the shell's theme, or simply \"theme\" to display current theme\n");
+        return 1;
+    }
     else {
         printf("The command you gave: %s, is not part of CSEShell's builtin commands.\n", args[1]);
     }
@@ -168,4 +174,70 @@ int unset_env_var(char **args) {
     }
     
     return status ? -1 : 1;
+}
+
+// Set/display theme of shell
+int set_theme(char **args) {
+    if (args[1] == NULL) {
+        printf("Current theme: %s \n", "PLACEHOLDER");
+        printf("Syntax: theme [default | colorblind | contrast | cyberpunk | monochrome]\n");
+        printf("Example usage: theme default\n");
+        return 1;
+    }
+    if (strcmp(args[1], "default") == 0) {
+        theme_banner_1 = COLOR_BRIGHT_RED;
+        theme_banner_2 = COLOR_BRIGHT_WHITE;
+        theme_userhost = COLOR_BRIGHT_GREEN;
+        theme_cwd = COLOR_BRIGHT_BLUE;
+        theme_prompt = COLOR_BRIGHT_BLACK ;
+    }
+    else if (strcmp(args[1], "colorblind") == 0) {
+        theme_banner_1 = COLOR_BRIGHT_CYAN;
+        theme_banner_2 = COLOR_BRIGHT_CYAN;
+        theme_userhost = COLOR_BRIGHT_YELLOW;
+        theme_cwd = COLOR_BRIGHT_WHITE;
+        theme_prompt = COLOR_CYAN;
+    }
+    else if (strcmp(args[1], "contrast") == 0) {
+        theme_banner_1 = COLOR_WHITE;
+        theme_banner_2 = COLOR_WHITE;
+        theme_userhost = COLOR_BRIGHT_BLUE;
+        theme_cwd = COLOR_BRIGHT_CYAN;
+        theme_prompt = COLOR_BRIGHT_WHITE;
+    }
+    else if (strcmp(args[1], "cyberpunk") == 0) {
+        theme_banner_1 = COLOR_BRIGHT_MAGENTA;
+        theme_banner_2 = COLOR_BRIGHT_MAGENTA;
+        theme_userhost = COLOR_BRIGHT_CYAN;
+        theme_cwd = COLOR_YELLOW;
+        theme_prompt = COLOR_MAGENTA;
+    }
+    else if (strcmp(args[1], "monochrome") == 0) {
+        theme_banner_1 = COLOR_BRIGHT_GREEN;
+        theme_banner_2 = COLOR_BRIGHT_GREEN;
+        theme_userhost = COLOR_GREEN;
+        theme_cwd = COLOR_BRIGHT_WHITE;
+        theme_prompt = COLOR_BRIGHT_BLACK;
+    }
+    else if (strcmp(args[1], "white") == 0) {
+        theme_banner_1 = COLOR_BRIGHT_WHITE;
+        theme_banner_2 = COLOR_BRIGHT_WHITE;
+        theme_userhost = COLOR_BRIGHT_WHITE;
+        theme_cwd = COLOR_BRIGHT_WHITE;
+        theme_prompt = COLOR_WHITE;
+    }
+    else if (strcmp(args[1], "green") == 0) {
+        theme_banner_1 = COLOR_BRIGHT_GREEN;
+        theme_banner_2 = COLOR_BRIGHT_GREEN;
+        theme_userhost = COLOR_BRIGHT_GREEN;
+        theme_cwd = COLOR_BRIGHT_GREEN;
+        theme_prompt = COLOR_GREEN ;
+    }
+    else {
+        printf("Syntax: theme [default | colorblind | contrast | cyberpunk | monochrome | white | green]\n");
+        printf("Example usage: theme default\n");
+        return -1;
+    }
+    print_ascii();
+    return 1;
 }
