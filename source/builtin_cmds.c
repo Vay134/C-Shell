@@ -104,7 +104,7 @@ int shell_usage(char **args) {
         return 1;
     }
     else if (strcmp(args[1], "theme") == 0) {
-        printf("Type: theme THEME to change the shell's theme\n");
+        printf("Type: theme THEME to change the shell's theme, or simply type \"theme\" to display current theme\n");
         return 1;
     }
     else {
@@ -179,6 +179,7 @@ int unset_env_var(char **args) {
 // Set/display theme of shell
 int set_theme(char **args) {
     if (args[1] == NULL) {
+        printf("Current theme: %s\n", getenv("THEME"));
         printf("Syntax: theme [default | colorblind | contrast | cyberpunk | monochrome]\n");
         printf("Example usage: theme default\n");
         return 1;
@@ -241,8 +242,10 @@ int set_theme(char **args) {
         theme_prompt = COLOR_BRIGHT_BLACK ;
         printf("Syntax: theme [default | colorblind | contrast | cyberpunk | monochrome | white | green]\n");
         printf("Example usage: theme default\n");
+        setenv("THEME", "default", 1);
         return -1;
     }
+    setenv("THEME", args[1], 1);
     print_ascii();
     return 1;
 }
